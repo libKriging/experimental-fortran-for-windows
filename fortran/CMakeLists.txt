@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project(flib Fortran C)
+project(flib Fortran)
 
 # Prevent from root system installation
 if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
