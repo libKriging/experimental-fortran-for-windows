@@ -20,9 +20,6 @@ target_include_directories(
         $<INSTALL_INTERFACE:include>
 )
 
-#find_library(GFORTRAN_LIBRARY NAMES libgfortran.5.dylib)
-#target_link_libraries(${PROJECT_NAME} PUBLIC ${GFORTRAN_LIBRARY})
-
 set_target_properties(${PROJECT_NAME} PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
 
 install(
