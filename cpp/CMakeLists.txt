@@ -10,3 +10,6 @@ find_package(flib CONFIG REQUIRED)
 message(STATUS ${flib_INCLUDE_DIR})
 add_executable(cppexe ${CPP_SRC})
 target_link_libraries(cppexe flib::flib)
+
+enable_testing()
+add_test(NAME cppexe COMMAND cppexe)

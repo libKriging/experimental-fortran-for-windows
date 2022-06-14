@@ -59,7 +59,7 @@ jobs:
           pushd fortran
           mkdir build && cd build
           cmake \
-            -DCMAKE_Fortran_COMPILER="$(R CMD config FC)" \
+            -DCMAKE_Fortran_COMPILER="$(R CMD config FC | awk '{ print $1 }')" \
             -G "Unix Makefiles" \
             -DCMAKE_BUILD_TYPE="${MODE}" ..
           cmake --build . --target install --config "${MODE}"
@@ -68,6 +68,7 @@ jobs:
           mkdir build && cd build
           cmake -DCMAKE_BUILD_TYPE="${MODE}" ..
           cmake --build .
+          ctest -C ${MODE}
           
           
 
