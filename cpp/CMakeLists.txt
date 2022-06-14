@@ -1,0 +1,12 @@
+cmake_minimum_required(VERSION 3.15)
+project(cppexe CXX)
+
+set(CPP_SRC main.cpp)
+
+set(MAINFFPATH "${CMAKE_SOURCE_DIR}/../fortran/build/installed")
+set(flib_DIR "${MAINFFPATH}/lib/cmake/flib")
+
+find_package(flib CONFIG REQUIRED)
+message(STATUS ${flib_INCLUDE_DIR})
+add_executable(cppexe ${CPP_SRC})
+target_link_libraries(cppexe flib::flib)
