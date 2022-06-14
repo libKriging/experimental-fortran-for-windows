@@ -35,13 +35,31 @@ jobs:
         run: |
           echo "MODE=${{matrix.mode}}" >> $GITHUB_ENV
           
+      - name: Explain current config
+        shell: bash
+        run: |
+          if ( command -v gfortran >/dev/null 2>&1 ); then
+            echo "Fortran config: $(command -v gfortran)"
+            gfortran --version 2>&1 | sed 's/^/  /'
+          else
+            echo "No Fortran compiler command found"
+          fi
+          
+          if ( command -v make >/dev/null 2>&1 ); then
+            echo "Make config: $(command -v make)"
+            make --version 2>&1 | sed 's/^/  /'
+          else
+            echo "No make command found"
+          fi
+    
       - name: script
         shell: bash
         run: |
+          set -x
           pushd fortran
           mkdir build && cd build
           cmake \
-            -DCMAKE_Fortran_COMPILER=$(command -v gfortran) \
+            -DCMAKE_Fortran_COMPILER="$(R CMD config FC)" \
             -G "Unix Makefiles" \
             -DCMAKE_BUILD_TYPE="${MODE}" ..
           cmake --build . --target install --config "${MODE}"
