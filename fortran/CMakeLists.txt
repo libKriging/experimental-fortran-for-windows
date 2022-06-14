@@ -17,14 +17,49 @@ add_library(${PROJECT_NAME} STATIC ${FORTRAN_SRC} ${HEADERS})
 set(FLIBS_LIST ${FLIBS})
 separate_arguments(FLIBS_LIST)
 
+#target_link_libraries(${PROJECT_NAME} "-Wl,--whole-archive")
+
+execute_process(COMMAND ${CMAKE_Fortran_COMPILER} -print-search-dirs
+                RESULT_VARIABLE HINT_RESULT
+                OUTPUT_VARIABLE HINT_OUTPUT
+                ERROR_VARIABLE HINT_ERROR
+                ERROR_QUIET
+                OUTPUT_STRIP_TRAILING_WHITESPACE
+                ERROR_STRIP_TRAILING_WHITESPACE)
+if (HINT_RESULT)
+    message(FATAL_ERROR "Cannot get default compiler search directory: ${HINT_ERROR}")
+endif()
+
+# requires CMake ≥3.9
+if (HINT_OUTPUT MATCHES "libraries: =(.*)")
+    # paths in CMAKE_MATCH_1
+    if (WIN32)
+        # still separate using ;
+        set(HINT_PATHS ${CMAKE_MATCH_1})
+    else()
+        string(REPLACE ":" ";" HINT_PATHS ${CMAKE_MATCH_1})
+    endif()
+else()
+    message(FATAL_ERROR "Cannot find default compiler search directory")
+endif()
+
+if (WIN32)
+    set(CMAKE_FIND_LIBRARY_SUFFIXES .a) # no .dll.a
+    list(APPEND FLIBS_LIST "-lgcc")
+endif()
+
 foreach(ITEM ${FLIBS_LIST})
     message(STATUS "Processing external lib option: ${ITEM}")
     string(SUBSTRING "${ITEM}" 0 2 SYMBOL)
     string(SUBSTRING "${ITEM}" 2 -1 VALUE)
     if (SYMBOL STREQUAL "-L")
-        target_link_directories(${PROJECT_NAME} PUBLIC "${VALUE}")
+        list(APPEND HINT_PATHS "${VALUE}")
+        # Prefer full path link to prevent from adjustments (suffix,prefix,path) done MSVC when searching libs  
+        # target_link_directories(${PROJECT_NAME} PRIVATE "${VALUE}")
     elseif (SYMBOL STREQUAL "-l")
-        target_link_libraries(${PROJECT_NAME} PUBLIC "${VALUE}")
+        find_library(LIB_${VALUE} NAMES ${VALUE} HINTS ${HINT_PATHS})
+        message(STATUS "Library ${VALUE} found at location ${LIB_${VALUE}}")
+        target_link_libraries(${PROJECT_NAME} PUBLIC "${LIB_${VALUE}}")
     else()
         message(FATAL_ERROR "Unknown option: ${ITEM}")
     endif()
