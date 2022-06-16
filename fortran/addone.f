@@ -21,6 +21,7 @@ c
       temp = sngl(ttime)
       call cpu_time(temp)
       ttime = dble(temp)
+      write(*,*) 'Hello ttime=', ttime
 
       return
 
