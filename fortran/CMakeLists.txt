@@ -46,6 +46,11 @@ endif()
 if (WIN32)
     set(CMAKE_FIND_LIBRARY_SUFFIXES .a) # no .dll.a
     list(APPEND FLIBS_LIST "-lgcc")
+    list(APPEND FLIBS_LIST "-lgcc_s")
+    list(APPEND FLIBS_LIST "-lmingwex")
+    list(APPEND FLIBS_LIST "-lpthread")
+    list(APPEND FLIBS_LIST "-lmingw32")
+    list(APPEND FLIBS_LIST "-lcrtdll")
 endif()
 
 foreach(ITEM ${FLIBS_LIST})
