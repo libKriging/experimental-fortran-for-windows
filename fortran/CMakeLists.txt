@@ -8,7 +8,7 @@ if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     set(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT FALSE CACHE BOOL "Installation prefix has been set" FORCE)
 endif ()
 
-set(FORTRAN_SRC addone.f)
+set(FORTRAN_SRC test.F)
 set(HEADERS "include/${PROJECT_NAME}/flib.h"
 )
 
@@ -45,13 +45,26 @@ endif()
 
 if (WIN32)
     set(CMAKE_FIND_LIBRARY_SUFFIXES .a) # no .dll.a
-    list(APPEND FLIBS_LIST "-lgcc")
-    list(APPEND FLIBS_LIST "-lgcc_s")
-    list(APPEND FLIBS_LIST "-lmingwex")
-    list(APPEND FLIBS_LIST "-lpthread")
-    list(APPEND FLIBS_LIST "-lmingw32")
-    list(APPEND FLIBS_LIST "-lcrtdll")
 endif()
+
+target_compile_definitions(${PROJECT_NAME} PRIVATE FLIB_CPU_TIME)
+if (WIN32)
+    list(APPEND FLIBS_LIST "-lgcc")
+endif()
+
+target_compile_definitions(${PROJECT_NAME} PRIVATE FLIB_STRNCMP)
+
+#target_compile_definitions(${PROJECT_NAME} PRIVATE FLIB_WRITE)
+#target_compile_definitions(${PROJECT_NAME} PRIVATE FLIB_STR_CONDITION)
+#if (WIN32)
+#    # Need more dependencies 
+#    list(APPEND FLIBS_LIST "-lgcc")
+#    list(APPEND FLIBS_LIST "-lgcc_s")
+#    list(APPEND FLIBS_LIST "-lmingwex")
+#    list(APPEND FLIBS_LIST "-lpthread")
+#    list(APPEND FLIBS_LIST "-lmingw32")
+#    list(APPEND FLIBS_LIST "-lcrtdll")
+#endif()
 
 foreach(ITEM ${FLIBS_LIST})
     message(STATUS "Processing external lib option: ${ITEM}")

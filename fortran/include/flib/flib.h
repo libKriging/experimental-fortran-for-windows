@@ -2,9 +2,9 @@
 #define EXPERIMENTAL_FORTRAN_FOR_WINDOWS_FORTRAN_INCLUDE_FLIB_H
 
 extern "C" {
-void addone_(const double* t);
+void test_(int*, int*, int*, const double* t);
 }
 
-#define addone addone_
+#define test test_
 
 #endif  // EXPERIMENTAL_FORTRAN_FOR_WINDOWS_FORTRAN_INCLUDE_FLIB_H
