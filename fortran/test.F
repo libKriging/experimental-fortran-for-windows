@@ -1,25 +1,26 @@
-      integer function COMPARE(a, b, n)
+      logical function STRCMP(a, b, n)
             use iso_c_binding
             character a(*)      
             character b(*)
             integer n
             interface
-                integer(c_int) function strncmp(dest, src, n) bind(C)
+                integer(c_int) function strncmp0(dest, src, n) bind(C)
                    import
                    character,  intent(in) :: dest(*)
                    character,  intent(in)  :: src(*)
                    integer(c_int), value, intent(in) :: n
-                 end function strncmp
+                 end function strncmp0
              end interface
-             COMPARE = strncmp(a, b, n)
+             STRCMP = (strncmp0(a, b, n) == 0)
              return
-      end function COMPARE
+      end function STRCMP
+#define STREQUAL(a,b) STRCMP((a),(b),len(b))
 
       subroutine test(has_str_condition, has_strncmp, has_write, ttime)
       integer has_str_condition, has_strncmp, has_write
       double precision ttime
       
-      integer COMPARE
+      logical STRCMP
       character*60     task
       task = 'START'
       
@@ -29,8 +30,8 @@
       endif
 #endif
 
-#ifdef FLIB_STRNCMP
-      if (COMPARE(task, 'START', 4) == 0) then
+#ifdef FLIB_STRCMP
+      if (STREQUAL(task(3:5), 'ART')) then
           has_strncmp = 1
       endif
 #endif 

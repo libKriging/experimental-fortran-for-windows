@@ -52,7 +52,7 @@ if (WIN32)
     list(APPEND FLIBS_LIST "-lgcc")
 endif()
 
-target_compile_definitions(${PROJECT_NAME} PRIVATE FLIB_STRNCMP)
+target_compile_definitions(${PROJECT_NAME} PRIVATE FLIB_STRCMP)
 
 #target_compile_definitions(${PROJECT_NAME} PRIVATE FLIB_WRITE)
 #target_compile_definitions(${PROJECT_NAME} PRIVATE FLIB_STR_CONDITION)
